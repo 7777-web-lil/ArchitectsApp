@@ -27,8 +27,26 @@ const handleCreateProject= ()=>{
         })
         .then((res)=>{
             setProjects([...projects,res.data])
+
+            setTitle("")
+            setDescription("")
         })
 
+}
+const handleUpdateProject=(id:string)=>{
+    axios
+        .put(`http://localhost:3000/projects/${id}`,{
+            title,
+            description
+        })
+        .then((res)=>{
+            setProjects(
+                projects.map((proj)=>
+                    proj._id === id ? res.data :proj
+                )
+            )
+        })
+        .catch((error)=>console.log(error))
 }
   return (
     <>
@@ -55,8 +73,10 @@ const handleCreateProject= ()=>{
             {projects.map((p) => (
                 <Project
                     key={p._id}
+                    _id={p._id}
                     title={p.title}
                     description={p.description}
+                    onUpdate={handleUpdateProject}
                 />
             ))}
         </div>

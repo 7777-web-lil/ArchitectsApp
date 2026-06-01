@@ -21,4 +21,19 @@ router.post("/", async (req:Request,res:Response)=>{
     }
 
 })
+router.put("/:id", async (req:Request,res:Response)=>{
+    const{id}=req.params
+    try{
+        const updateProject= await Project.findByIdAndUpdate(id,
+            req.body,
+            { returnDocument: "after" }
+
+        )
+        res.status(201).json(updateProject)
+    }catch(error){
+        res.status(500).json({
+            message:"There was an error updating your project"
+        })
+    }
+})
 export default router
