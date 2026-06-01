@@ -24,15 +24,26 @@ router.post("/", async (req:Request,res:Response)=>{
 router.put("/:id", async (req:Request,res:Response)=>{
     const{id}=req.params
     try{
-        const updateProject= await Project.findByIdAndUpdate(id,
+        const updatedProject= await Project.findByIdAndUpdate(id,
             req.body,
             { returnDocument: "after" }
 
         )
-        res.status(201).json(updateProject)
+        res.status(201).json(updatedProject)
     }catch(error){
         res.status(500).json({
             message:"There was an error updating your project"
+        })
+    }
+})
+router.delete("/:id",async (req:Request,res:Response)=>{
+    const{id}=req.params
+    try{
+        const deletedProject= await Project.findByIdAndDelete(id)
+        res.status(201).json(deletedProject)
+    }catch (error){
+        res.status(500).json({
+            message:"There was an error deleting the project"
         })
     }
 })

@@ -48,6 +48,18 @@ const handleUpdateProject=(id:string)=>{
         })
         .catch((error)=>console.log(error))
 }
+const handleDeleteProject=(id:string)=>{
+    axios
+        .delete(`http://localhost:3000/projects/${id}`)
+        .then(()=>{
+            setProjects(
+                projects.filter((proj)=>
+                    proj._id !== id
+                )
+            )
+        })
+        .catch((error)=>console.log(error))
+}
   return (
     <>
         <div>
@@ -77,6 +89,7 @@ const handleUpdateProject=(id:string)=>{
                     title={p.title}
                     description={p.description}
                     onUpdate={handleUpdateProject}
+                    onDelete={handleDeleteProject}
                 />
             ))}
         </div>
