@@ -4,7 +4,10 @@ const projectSchema = new mongoose.Schema(
     {
         title: String,
         description: String,
-        images: [String],
+        images:{
+          twoD:  [String],
+          threeD:[String]
+        },
         architectId: String
     },
     { timestamps: true }

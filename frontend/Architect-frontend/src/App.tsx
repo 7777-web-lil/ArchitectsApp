@@ -7,11 +7,17 @@ type ProjectType = {
     _id: string;
     title: string;
     description: string;
+    images: {
+        twoD: string[];
+        threeD: string[];
+    };
 };
 
 function App() {
     const[title,setTitle]= useState("")
     const[description,setDescription]=useState("")
+    const [twoDImage, setTwoDImage] = useState("");
+    const [threeDImage, setThreeDImage] = useState("");
     const [projects,setProjects]= useState<ProjectType[]>([]);
     useEffect(() => {
         axios
@@ -23,22 +29,44 @@ const handleCreateProject= ()=>{
     axios
         .post("http://localhost:3000/projects",{
             title,
-            description
+            description,
+            images: {
+                twoD: [twoDImage],
+                threeD: [threeDImage]
+            }
         })
         .then((res)=>{
             setProjects([...projects,res.data])
 
             setTitle("")
             setDescription("")
+            setTwoDImage("")
+            setThreeDImage("")
         })
 
 }
-const handleUpdateProject=(id:string)=>{
+const handleUpdateProject=(
+    id:string,
+    data: {
+        title: string;
+        description: string;
+        images:{
+            twoD:string[]
+            threeD:string[]
+        }
+        }
+
+
+)=>{
     axios
-        .put(`http://localhost:3000/projects/${id}`,{
-            title,
-            description
-        })
+        .put(`http://localhost:3000/projects/${id}`,data)
+        //     title,
+        //     description,
+        //     images: {
+        //         twoD: [twoDImage],
+        //         threeD: [threeDImage]
+        //     }
+        // })
         .then((res)=>{
             setProjects(
                 projects.map((proj)=>
@@ -62,37 +90,58 @@ const handleDeleteProject=(id:string)=>{
 }
   return (
     <>
-        <div>
-            <input
-                placeholder="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
+        <div className="app-container">
 
-            <input
-                placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-            />
+            <div className="dashboard">
 
-            <button onClick={handleCreateProject}>
-                Add Project
-            </button>
+                <h1 className="page-title">Architect Dashboard</h1>
+
+                <div className="project-form">
+                    <input
+                        placeholder="Project title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+
+                    <input
+                        placeholder="Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <input
+                        placeholder="2D Image URL"
+                        value={twoDImage}
+                        onChange={(e) => setTwoDImage(e.target.value)}
+                    />
+
+                    <input
+                        placeholder="3D Image URL"
+                        value={threeDImage}
+                        onChange={(e) => setThreeDImage(e.target.value)}
+                    />
+
+                    <button onClick={handleCreateProject}>
+                        + Add Project
+                    </button>
+                </div>
+
+                <div className="projects-grid">
+                    {projects.map((p) => (
+                        <Project
+                            key={p._id}
+                            _id={p._id}
+                            title={p.title}
+                            description={p.description}
+                            images={p.images}
+                            onSave={handleUpdateProject}
+                            onDelete={handleDeleteProject}
+                        />
+                    ))}
+                </div>
+
+            </div>
         </div>
-        <div>
-            <h1>Architect Projects</h1>
 
-            {projects.map((p) => (
-                <Project
-                    key={p._id}
-                    _id={p._id}
-                    title={p.title}
-                    description={p.description}
-                    onUpdate={handleUpdateProject}
-                    onDelete={handleDeleteProject}
-                />
-            ))}
-        </div>
     </>
   )
 }
