@@ -6,7 +6,8 @@ const projectSchema = new mongoose.Schema(
         description: String,
         images:{
           twoD:  [String],
-          threeD:[String]
+          threeD:[String],
+          // interior:[String]
         },
         architectId: String
     },
